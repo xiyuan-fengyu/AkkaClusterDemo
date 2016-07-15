@@ -16,8 +16,8 @@ object Launcher {
     var flag =  true
     if (args.length >= 1) {
       args(0) match  {
-        case "master" =>
-          val config = ConfigFactory.parseString("akka.remote.netty.tcp.port=2550")
+        case "master" if args.length >= 2 && args(1).matches("[0-9]+") =>
+          val config = ConfigFactory.parseString(s"akka.remote.netty.tcp.port=${args(1)}")
             .withFallback(ConfigFactory.parseString("akka.cluster.roles = [master]"))
             .withFallback(ActorSystemFactory.configFromFile("AkkaCluster.conf"))
 
@@ -45,8 +45,7 @@ object Launcher {
 
     if (!flag) {
       println("参数有误，启动命令如下：")
-      println("启动master：java -jar *.jar master")
-      println("启动worker：java -jar *.jar worker <端口>")
+      println("启动worker：java -jar *.jar <master|workerManager|worker> <端口>")
     }
 
   }
