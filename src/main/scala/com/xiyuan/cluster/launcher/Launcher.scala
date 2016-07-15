@@ -3,6 +3,7 @@ package com.xiyuan.cluster.launcher
 import akka.actor.{Props, ActorSystem}
 import com.typesafe.config.ConfigFactory
 import com.xiyuan.cluster.actor.{WorkerActor, MasterActor}
+import com.xiyuan.cluster.info.ClusterInfo
 import com.xiyuan.cluster.util.ActorSystemFactory
 import com.xiyuan.netty.http.HttpServer
 
@@ -22,7 +23,8 @@ object Launcher {
 
           val system = ActorSystem("AkkaCluster", config)
           val master = system.actorOf(Props(new MasterActor(system)), "master")
-
+          ClusterInfo.init(master)
+          //启动内置服务器，提供管理界面
           new HttpServer()
 
         case "worker" if args.length >= 2 && args(1).matches("[0-9]+") =>
