@@ -1,0 +1,36 @@
+blockquote,body,button,dd,dl,dt,fieldset,form,h1,h2,h3,h4,h5,h6,hr,input,
+legend,li,ol,p,pre,td,textarea,th,ul,img
+{
+    margin: 0;
+    padding: 0;
+}
+body
+{
+    background-color: rgba(255,255,255,0)!important;
+}
+ul
+{
+    list-style: none;
+}
+li
+{
+    float: left;
+    overflow: hidden;
+}
+a
+{
+    text-decoration:none;
+}
+
+
+
+/*404.html start*/
+label.notFound {
+    display: block;
+    color: chocolate;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 200px;
+    text-align: center;
+}
+/*404.html end*/

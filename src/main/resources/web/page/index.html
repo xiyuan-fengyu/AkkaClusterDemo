@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:view="">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+</head>
+<body>
+    ${int}<br>
+    ${string}<br>
+    ${obj.msg}<br>
+    ${int >= 0?"<label>非负数</label>":"<label>负数</label>"}<br>
+    ${boolean ?"<label>true</label>":"<label>false</label>"}<br>
+
+    <view:switch>
+        <view:case condition="${conditions(0)}">
+            <label>case 1: ${conditions(0)}</label>
+        </view:case>
+        <view:case condition="${conditions(1) == true}">
+            <label>case 2: ${conditions(1)}</label>
+        </view:case>
+        <view:case condition="${conditions(2) > false}">
+            <label>case 3: ${conditions(2)}</label>
+        </view:case>
+        <view:case condition="true">
+            <label>case 4: true</label>
+        </view:case>
+    </view:switch>
+
+
+    <view:for list="${list0}" item="item" index="index">
+        <label>list0 ${item.msg}</label>
+    </view:for>
+
+    <view:for list="${list1}" item="item" index="index1">
+        <div data="${item.msg}">
+            <view:for list="${item.ids}" item="itemEmbed" index="indexEmbed">
+                <label>list1 embed ${index1}_${indexEmbed} ${itemEmbed}</label>
+            </view:for>
+        </div>
+    </view:for>
+</body>
+</html>
