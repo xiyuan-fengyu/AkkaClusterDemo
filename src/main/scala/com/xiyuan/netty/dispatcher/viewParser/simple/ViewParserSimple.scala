@@ -38,7 +38,7 @@ object ViewParserSimple {
     val buffer = new ArrayBuffer[(String, Int)]()
     val nameAndIndexRegex = new Regex("([^{}().\"\\?:]+?)\\(([0-9]+?)\\)")
     listStrSplit.foreach(item => {
-      if (item.matches(nameAndIndexRegex.regex)) {
+      if (item.matches(nameAndIndexRegex.toString())) {
         val nameAndIndexRegex(n, i) = item
         buffer += ((n, i.toInt))
       }
@@ -137,7 +137,7 @@ object ViewParserSimple {
     var str = content
 
     //解析switchTag
-    while (str.matches(ViewParserSimple.switchRegex.regex)) {
+    while (str.matches(ViewParserSimple.switchRegex.toString())) {
       val matcher = ViewParserSimple.switchRegex.pattern.matcher(str)
       if (matcher.find()) {
         val switchTag = new ViewSwitchTag(matcher)
@@ -196,7 +196,7 @@ object ViewParserSimple {
 
 
     //解析三元式${a <|<=|==|>=|> b ? c : d} 或者 ${a ? b: c}
-    while (str.matches(ViewParserSimple.chooseValueRegex.regex)) {
+    while (str.matches(ViewParserSimple.chooseValueRegex.toString())) {
       val matcher = ViewParserSimple.chooseValueRegex.pattern.matcher(str)
       if (matcher.find()) {
         //1,3,9,11,17,23
@@ -261,7 +261,7 @@ object ViewParserSimple {
     }
 
     //解析普通的取值表达式
-    while (str.matches(ViewParserSimple.modelValueRegex.regex)) {
+    while (str.matches(ViewParserSimple.modelValueRegex.toString())) {
       val matcher = ViewParserSimple.modelValueRegex.pattern.matcher(str)
       if (matcher.find()) {
         val matcherStr = matcher.group(1)
@@ -273,7 +273,7 @@ object ViewParserSimple {
     }
 
     //解析view;for表达式
-    while (str.matches(ViewParserSimple.viewForTagRegex.regex)) {
+    while (str.matches(ViewParserSimple.viewForTagRegex.toString())) {
       val matcher = ViewParserSimple.viewForTagRegex.pattern.matcher(str)
       if (matcher.find()) {
         val viewForTagStr = matcher.group(1)
@@ -286,16 +286,16 @@ object ViewParserSimple {
   }
 
   private def getExpressValue(exp: String, model: ViewModel, parentItem: ViewModel): Any = {
-    if (exp.matches(dataNumberRegex.regex)) {
+    if (exp.matches(dataNumberRegex.toString())) {
       exp.toDouble
     }
-    else if (exp.matches(dataBooleanRegex.regex)) {
+    else if (exp.matches(dataBooleanRegex.toString())) {
       exp.toBoolean
     }
-    else if (exp.matches(dataStrRegex.regex)) {
+    else if (exp.matches(dataStrRegex.toString())) {
       exp.substring(1, exp.length - 1)
     }
-    else if (exp.matches(dataNodesRegex.regex)) {
+    else if (exp.matches(dataNodesRegex.toString())) {
       val nodesArr = nodesStrToNodesArr(exp)
       val tempValue = getDataByNodes(model, parentItem, nodesArr)
       if (isInt(tempValue) || isLong(tempValue) || isFloat(tempValue) || isShort(tempValue)) tempValue.toString.toDouble
@@ -389,7 +389,7 @@ class ViewParserSimple extends ViewParser {
 
     var matchIndex = 0
     val matchMap = new mutable.HashMap[String, ViewForTag]()
-    while (str.matches(ViewParserSimple.forRegex.regex)) {
+    while (str.matches(ViewParserSimple.forRegex.toString())) {
       val matcher = ViewParserSimple.forRegex.pattern.matcher(str)
       if (matcher.find()) {
         val viewForTag = new ViewForTag(matchIndex, matcher)

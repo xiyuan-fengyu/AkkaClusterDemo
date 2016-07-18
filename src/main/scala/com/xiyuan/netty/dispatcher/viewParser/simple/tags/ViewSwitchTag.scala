@@ -22,7 +22,7 @@ class ViewSwitchTag(matcher: Matcher) {
     val caseAB = new ArrayBuffer[ViewCaseTag]()
 
     var caseIndex = 0
-    while (tempCasesStr.matches(ViewParserSimple.caseRegex.regex)) {
+    while (tempCasesStr.matches(ViewParserSimple.caseRegex.toString())) {
       val caseMatcher = ViewParserSimple.caseRegex.pattern.matcher(tempCasesStr)
       if (caseMatcher.find()) {
         val caseTag = new ViewCaseTag(caseMatcher, caseIndex)

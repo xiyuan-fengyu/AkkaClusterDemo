@@ -9,9 +9,9 @@
     <version>1.0.0</version>
 
     <properties>
-        <scala.version>2.11.4</scala.version>
-        <scala.version.prefix>2.11</scala.version.prefix>
-        <akka.version>2.4.8</akka.version>
+        <scala.version>2.10.4</scala.version>
+        <scala.version.prefix>2.10</scala.version.prefix>
+        <akka.version>2.3.15</akka.version>
     </properties>
 
     <dependencies>
@@ -62,21 +62,21 @@
             <artifactId>akka-cluster_${scala.version.prefix}</artifactId>
             <version>${akka.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-cluster-metrics_${scala.version.prefix}</artifactId>
-            <version>${akka.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.typesafe.akka</groupId>-->
+            <!--<artifactId>akka-cluster-metrics_${scala.version.prefix}</artifactId>-->
+            <!--<version>${akka.version}</version>-->
+        <!--</dependency>-->
         <!--<dependency>-->
             <!--<groupId>com.typesafe.akka</groupId>-->
             <!--<artifactId>akka-cluster-sharding_${scala.version.prefix}</artifactId>-->
             <!--<version>${akka.version}</version>-->
         <!--</dependency>-->
-        <dependency>
-            <groupId>com.typesafe.akka</groupId>
-            <artifactId>akka-cluster-tools_${scala.version.prefix}</artifactId>
-            <version>${akka.version}</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.typesafe.akka</groupId>-->
+            <!--<artifactId>akka-cluster-tools_${scala.version.prefix}</artifactId>-->
+            <!--<version>${akka.version}</version>-->
+        <!--</dependency>-->
         <!--akka end-->
 
 
