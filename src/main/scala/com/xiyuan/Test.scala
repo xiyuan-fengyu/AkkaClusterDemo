@@ -87,10 +87,10 @@ object Test {
 
 
     //执行远程ssh命令
-    //查询端口是否可用
-//    println(LinuxUtil.isPortFree(8000, "192.168.1.240", "root", "111111"))
     //杀死暂用端口的进程
-//    LinuxUtil.killByPort(2550, "192.168.1.240", "root", "111111")
+    LinuxUtil.killByPort(2550, "192.168.1.241", "root", "111111")
+    //查询端口是否可用
+    println(LinuxUtil.isPortFree(2550, "192.168.1.241", "root", "111111"))
     //创建文件夹
 //    LinuxUtil.mkdirs("/root/test/mkdirs/", "192.168.1.240", "root", "111111")
     //判断路径的状态：不存在-1；文件：0；文件夹：1

@@ -45,7 +45,11 @@ object DispatchCenter {
       val requestMapping = getRequestMappingAnno(m)
       if (requestMapping != null) {
         val returnType = m.getReturnType
-        if (returnType == classOf[String]
+        if (pathMapping.contains(requestMapping.value())) {
+          val exist = pathMapping(requestMapping.value())
+          throw new Exception(s"${clazz.getSimpleName}的${m.getName}和${exist._1.getClass.getSimpleName}的${exist._2.getName}的${classOf[RequestMapping].getSimpleName}注解的value值重复")
+        }
+        else if (returnType == classOf[String]
           || returnType == classOf[JsonObject]
           || returnType == classOf[Int]
           || returnType == classOf[Long]

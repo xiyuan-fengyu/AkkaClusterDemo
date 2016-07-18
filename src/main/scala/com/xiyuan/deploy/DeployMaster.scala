@@ -2,6 +2,7 @@ package com.xiyuan.deploy
 
 import java.io.File
 
+import com.xiyuan.netty.config.HttpServerConfig
 import com.xiyuan.util.LinuxUtil
 
 import scala.collection.mutable
@@ -13,19 +14,21 @@ object DeployMaster {
 
   val masterHost = "192.168.1.240"
 
-  val masterUsername = "root"
+  val masterUsername = LinuxAccount(masterHost).username
 
-  val masterPassword = "111111"
+  val masterPassword = LinuxAccount(masterHost).password
 
   val masterPort = 2550
 
   val masterDir = "/root/workplace/akkaDemo"
 
   //是主要jar包的路径，上传的时候会将该jar所在目录的jar包全部上传
-  val outMainJarPath = "./out/artifacts/AkkaClusterDemo_jar/AkkaClusterDemo.jar"
+  val outMainJarPath = "./out/artifacts/AkkaClusterDemo_jar/"
+
+  val outMainJarName = "AkkaClusterDemo.jar"
 
   def main(args: Array[String]) {
-    //杀死暂用 2550 端口的进程
+    //杀死暂用 masterPort 端口的进程
     LinuxUtil.killByPort(masterPort, masterHost, masterUsername, masterPassword)
 
     //在 masterHost 中创建部署文件夹
@@ -37,8 +40,7 @@ object DeployMaster {
 
     //将build之后的所有 jar 包拷上传到该目录
     val outMainJarFile = new File(outMainJarPath)
-    val outMainJarName = outMainJarFile.getName
-    val files = outMainJarFile.getParentFile.listFiles()
+    val files = outMainJarFile.listFiles()
     var index = 1
     files.foreach(f => {
       val fPath = f.getPath
@@ -58,6 +60,10 @@ object DeployMaster {
 
     //启动 master
     LinuxUtil.sshExecute("source /etc/profile; java -jar " + masterDir + "/" + outMainJarName + " master " + masterPort, masterHost, masterUsername, masterPassword)
+  }
+
+  def stop(): Unit = {
+    LinuxUtil.killByPort(masterPort, masterHost, masterUsername, masterPassword)
   }
 
 }

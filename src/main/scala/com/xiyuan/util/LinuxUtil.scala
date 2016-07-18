@@ -56,9 +56,9 @@ object LinuxUtil {
     flag
   }
 
-  private val stdOutTag = "STD_OUT\t"
+  val stdOutTag = "STD_OUT\t"
 
-  private val stdErrorTag = "STD_ERROR\t"
+  val stdErrorTag = "STD_ERROR\t"
 
   /**
     * 用ssh执行远程命令
@@ -69,7 +69,7 @@ object LinuxUtil {
     * @param password
     * @param stdOutBuffer 如果为null表示不关心输出,输出会打印到控制台；如果不为null，则会把输出存入到 stdOutBuffer,用于后续处理，而不会打印到控制台
     */
-  def sshExecute(command: String, host: String, username: String, password: String, stdOutBuffer: ArrayBuffer[String] = null): Unit = {
+  def sshExecute(command: String, host: String, username: String, password: String, stdOutBuffer: ArrayBuffer[String] = null, ignoreStd: Boolean = false): Unit = {
     //http://somefuture.iteye.com/blog/1997459
     var connection: Connection = null
     var session: Session = null
@@ -82,52 +82,55 @@ object LinuxUtil {
       if(connectionSuccess) {
         session = connection.openSession()
         session.execCommand(command)
-        stdOutReader = new BufferedReader(new InputStreamReader(new StreamGobbler(session.getStdout)))
-        stdErrReader = new BufferedReader(new InputStreamReader(new StreamGobbler(session.getStderr)))
 
-        val stdOutThd = new StdThread() {
-          override def execute() = {
-            var stdOutLine: String = null
-            var flag = true
-            while (flag) {
-              stdOutLine = stdOutReader.readLine()
-              if(stdOutLine == null) {
-                flag = false
-              }
-              else {
-                if (stdOutBuffer != null) {
-                  stdOutBuffer += stdOutTag + stdOutLine
+        if (!ignoreStd) {
+          stdOutReader = new BufferedReader(new InputStreamReader(new StreamGobbler(session.getStdout)))
+          stdErrReader = new BufferedReader(new InputStreamReader(new StreamGobbler(session.getStderr)))
+
+          val stdOutThd = new StdThread() {
+            override def execute() = {
+              var stdOutLine: String = null
+              var flag = true
+              while (flag) {
+                stdOutLine = stdOutReader.readLine()
+                if(stdOutLine == null) {
+                  flag = false
                 }
-                else println(stdOutLine)
+                else {
+                  if (stdOutBuffer != null) {
+                    stdOutBuffer += stdOutTag + stdOutLine
+                  }
+                  else println(stdOutLine)
+                }
               }
             }
           }
-        }
-        stdOutThd.start()
+          stdOutThd.start()
 
-        val stdErrThd = new StdThread() {
-          override def execute() = {
-            var stdErrLine: String = null
-            var flag = true
-            while (flag) {
-              stdErrLine = stdErrReader.readLine()
-              if(stdErrLine == null) {
-                flag = false
-              }
-              else {
-                if (stdOutBuffer != null) {
-                  stdOutBuffer += stdErrorTag + stdErrLine
+          val stdErrThd = new StdThread() {
+            override def execute() = {
+              var stdErrLine: String = null
+              var flag = true
+              while (flag) {
+                stdErrLine = stdErrReader.readLine()
+                if(stdErrLine == null) {
+                  flag = false
                 }
-                else println(stdErrLine)
+                else {
+                  if (stdOutBuffer != null) {
+                    stdOutBuffer += stdErrorTag + stdErrLine
+                  }
+                  else println(stdErrLine)
+                }
               }
             }
           }
-        }
-        stdErrThd.start()
+          stdErrThd.start()
 
-        do {
-          Thread.sleep(200)
-        } while (stdOutThd.isRunning && stdErrThd.isRunning)
+          do {
+            Thread.sleep(200)
+          } while (stdOutThd.isRunning && stdErrThd.isRunning)
+        }
       }
     }
     catch {
@@ -172,16 +175,17 @@ object LinuxUtil {
     */
   def killByPort(port: Int, host: String, username: String, password: String): Unit = {
     val stdBuffer = new ArrayBuffer[String]()
-    LinuxUtil.sshExecute(s"netstat -anp | grep '.*:$port.*LISTEN[^0-9]*[0-9]\\+/.*'", host, username, password, stdBuffer)
+    LinuxUtil.sshExecute(s"lsof -i:$port", host, username, password, stdBuffer)
     stdBuffer.foreach(line => {
-      if (line.matches(portRegex.toString())) {
-        val matcher = portRegex.pattern.matcher(line)
-        if (matcher.find()) {
-          val pid = matcher.group(1)
+      if (line.startsWith(stdOutTag)) {
+        val split = line.substring(stdOutTag.length).split(" {1,}")
+        if (split.length >= 2 && split(1).matches("[0-9]{1,}")) {
+          val pid = split(1)
           LinuxUtil.sshExecute(s"kill -9 $pid", host, username, password)
         }
       }
     })
+
   }
 
   def mkdirs(dirs: String, host: String, username: String, password: String): Unit = {

@@ -9,5 +9,17 @@
         Master<br>
         Address: ${masterInfo.address}
     </div>
+
+    <div>
+        <view:for list="${workerManagers}" item="manager">
+            <div>
+                ${manager._1}
+                <view:for list="${manager._2}" item="worker" index="index">
+                    <label>${index} : ${worker}</label><br>
+                </view:for>
+            </div>
+
+        </view:for>
+    </div>
 </body>
 </html>

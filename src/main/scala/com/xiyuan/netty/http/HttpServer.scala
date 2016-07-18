@@ -3,6 +3,7 @@ package com.xiyuan.netty.http
 import java.net.InetSocketAddress
 import java.util.concurrent.Executors
 
+import com.xiyuan.netty.config.HttpServerConfig
 import com.xiyuan.netty.dispatcher.DispatchCenter
 import org.jboss.netty.bootstrap.ServerBootstrap
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory
@@ -17,7 +18,7 @@ class HttpServer {
 
     val bootstrap = new ServerBootstrap(new NioServerSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool()))
     bootstrap.setPipelineFactory(new HttpPipelineFactory)
-    bootstrap.bind(new InetSocketAddress(8000)).getCloseFuture.sync()
+    bootstrap.bind(new InetSocketAddress(HttpServerConfig.port)).getCloseFuture.sync()
   }
   init()
 
