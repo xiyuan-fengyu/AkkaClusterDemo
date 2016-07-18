@@ -1,4 +1,4 @@
-package com.xiyuan
+package com.xiyuan.deploy
 
 import java.io.File
 

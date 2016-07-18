@@ -1,4 +1,4 @@
-package com.xiyuan
+package com.xiyuan.deploy
 
 import com.xiyuan.util.LinuxUtil
 
