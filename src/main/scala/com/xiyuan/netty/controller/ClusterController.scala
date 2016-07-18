@@ -53,11 +53,10 @@ class ClusterController {
   }
 
   @RequestMapping(value="newWorker")
-  def newWorker(host: String, port: Int): JsonObject = {
+  def newWorker(manager: String): JsonObject = {
     val result = new JsonObject
 
-    val manager = ClusterInfo.getWorkerManagerByIpPort(host, port)
-    if (manager != null) {
+    if (ClusterInfo.workerManagers.contains(manager)) {
       val uniqueName = "worker_" + new Date().getTime + "_" + (10000 * math.random).toInt
       ClusterInfo.master ! new NewWorker(manager, uniqueName)
 
@@ -80,7 +79,7 @@ class ClusterController {
     }
     else {
       result.addProperty("success", false)
-      result.addProperty("message", s"$host:${port}没有对应的manager")
+      result.addProperty("message", s"${manager}不存在")
     }
     result
   }
