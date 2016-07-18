@@ -15,6 +15,12 @@ class WorkerManagerActor(sys: ActorSystem) extends ClusterItemActor(sys = sys) {
       println(member.address.toString)
       member.getRoles.toArray().foreach(println)
 
+    case MemberRemoved(member, status) =>
+      if (member.hasRole("master")) {
+        context.actorSelection("*") ! PoisonPill
+        sys.shutdown()
+      }
+
     case newWorker: NewWorker =>
       val workerName = newWorker.uniqueName
       val worker = context.actorOf(Props(new WorkerActor(sys)), workerName)
